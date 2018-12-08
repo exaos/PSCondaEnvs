@@ -17,10 +17,10 @@ if (-not $PSScriptRoot) {
 }
 
 # Get location of Anaconda installation
-$anacondaInstallPath = (Get-Item $PSScriptRoot).parent.FullName
+$condaInstallPath = (Get-Item $PSScriptRoot).parent.FullName
 
 # Build ENVS path
-$env:ANACONDA_ENVS = $anacondaInstallPath + '\envs'
+$env:CONDA_ENVS = $condaInstallPath + '\envs'
 
 if (-not (Test-Path env:\CONDA_DEFAULT_ENV))
 {    
@@ -41,12 +41,15 @@ if (Test-Path env:\CONDA_DEFAULT_ENV)
     Write-Host "Deactivating environment `"$env:CONDA_DEFAULT_ENV...`""
 
     # This removes the previous env from the path and restores the original path
-    $env:PATH = $env:ANACONDA_BASE_PATH
+    $env:PATH = $env:CONDA_SAVED_PATH
      
     # Restore original user prompt
     $function:prompt = $function:condaUserPrompt
     
     # Clean up 
+	Remove-Item env:\CONDA_PYTHON_EXE
+	Remove-Item env:\CONDA_EXE
+	Remove-Item env:\CONDA_PREFIX
     Remove-Item env:\CONDA_DEFAULT_ENV
     Remove-Item function:\condaUserPrompt
     

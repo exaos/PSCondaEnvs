@@ -18,15 +18,22 @@ if (-not $PSScriptRoot)
 }
 
 # Get location of Anaconda installation
-$anacondaInstallPath = (get-item $PSScriptRoot).parent.FullName
+$condaInstallPath = (get-item $PSScriptRoot).parent.FullName
 
 # Build ENVS path
-$env:ANACONDA_ENVS = $anacondaInstallPath + '\envs'
+$env:CONDA_ENVS = $condaInstallPath + '\envs'
 
+if ( $condaEnvName -eq "base" ) {
+	$Env:CONDA_PREFIX = $anacondaInstallPath
+} else {
+	$Env:CONDA_PREFIX = "$env:CONDA_ENVS\$condaEnvName"
+}
+
+##
 if (-not $condaEnvName)
 {
     Write-Host
-    Write-Host "Usage: activate envname [-UpdateRegistry]"
+    Write-Host "Usage: activate [base | envname] [-UpdateRegistry]"
     Write-Host
     Write-Host "Deactivates previously activated Conda environment, then activates the chosen one."
     Write-Host
@@ -34,10 +41,11 @@ if (-not $condaEnvName)
     exit
 }
 
-if (-not (Test-Path $env:ANACONDA_ENVS\$condaEnvName\Python.exe))
+# Test the path to python.exe
+if (-not (Test-Path "$env:CONDA_PREFIX\Python.exe"))
 {
     Write-Host
-    Write-Warning "No environment named `"$condaEnvName`" exists in $env:ANACONDA_ENVS."
+    Write-Warning "No environment named `"$condaEnvName`" exists in $env:CONDA_ENVS."
     Write-Host
     Write-Host
     exit 
@@ -48,11 +56,15 @@ if (Test-Path env:\CONDA_DEFAULT_ENV) {
     Invoke-Expression deactivate.ps1
 }
 
+## setup
 $env:CONDA_DEFAULT_ENV = $condaEnvName
+$Env:CONDA_EXE = "$Env:CONDA_PREFIX\Scripts\conda.exe"
+$Env:CONDA_PYTHON_EXE = "$Env:CONDA_PREFIX\python.exe"
+
 Write-Host
 Write-Host "Activating environment `"$env:CONDA_DEFAULT_ENV...`""
-$env:ANACONDA_BASE_PATH = $env:PATH
-$env:PATH="$env:ANACONDA_ENVS\$env:CONDA_DEFAULT_ENV\;$env:ANACONDA_ENVS\$env:CONDA_DEFAULT_ENV\Scripts\;$env:ANACONDA_BASE_PATH"    
+$env:CONDA_SAVED_PATH = $Env:Path
+$Env:Path="$Env:CONDA_PREFIX;$Env:CONDA_PREFIX\Scripts;$Env:CONDA_PREFIX\Library\bin;$Env:CONDA_SAVED_PATH"
 Write-Host
 Write-Host
 
