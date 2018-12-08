@@ -1,0 +1,1 @@
+CreateObject("WScript.Shell").Run "cmd /c D:\utils\anaconda3\add-ons\Jupyter-QtConsole.bat", 0, False
