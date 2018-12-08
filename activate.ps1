@@ -24,7 +24,7 @@ $condaInstallPath = (get-item $PSScriptRoot).parent.FullName
 $env:CONDA_ENVS = $condaInstallPath + '\envs'
 
 if ( $condaEnvName -eq "base" ) {
-	$Env:CONDA_PREFIX = $anacondaInstallPath
+	$Env:CONDA_PREFIX = $condaInstallPath
 } else {
 	$Env:CONDA_PREFIX = "$env:CONDA_ENVS\$condaEnvName"
 }
