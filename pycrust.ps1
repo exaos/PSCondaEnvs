@@ -9,5 +9,8 @@ public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
 $consolePtr = [Console.Window]::GetConsoleWindow()
 [Console.Window]::ShowWindow($consolePtr, 0)
 
+# Activate the CONDA envrionment
+D:\utils\anaconda3\Scripts\activate.ps1 base
+
 # Run the utility.
 D:\utils\anaconda3\Scripts\pycrust.exe
