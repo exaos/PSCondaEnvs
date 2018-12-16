@@ -23,14 +23,18 @@ $condaInstallPath = (get-item $PSScriptRoot).parent.FullName
 # Build ENVS path
 $env:CONDA_ENVS = $condaInstallPath + '\envs'
 
-if ( $condaEnvName -eq "base" ) {
+if ( [string]::IsNullOrEmpty($condaEnvName) ) {
+    $condaEnvName = "base"
+}
+
+if ($condaEnvName -eq "base") {
 	$Env:CONDA_PREFIX = $condaInstallPath
 } else {
 	$Env:CONDA_PREFIX = "$env:CONDA_ENVS\$condaEnvName"
 }
 
 ##
-if (-not $condaEnvName)
+if (-not $Env:CONDA_PREFIX)
 {
     Write-Host
     Write-Host "Usage: activate [base | envname] [-UpdateRegistry]"
